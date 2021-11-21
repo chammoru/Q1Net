@@ -1,0 +1,4 @@
+classifier/save/jpeg_paper/best/.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text
+classifier/save/jpeg_paper/best/.index filter=lfs diff=lfs merge=lfs -text
+classifier/save/jpeg_paper_k12/best/.index filter=lfs diff=lfs merge=lfs -text
+classifier/save/jpeg_paper_k12/best/.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text
