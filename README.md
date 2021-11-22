@@ -1,5 +1,5 @@
 # Q1Net: Quality Level Prediction of Image Compression using Block-wise Confidence-aware CNN - BMVC 2021
-https://www.bmvc2021.com/programme/accepted-papers/#session-id-2
+https://www.bmvc2021-virtualconference.com/conference/papers/paper_0813.html
 
 ## Authors
 Kyuwon Kim (chammoru at gmail, q1.kim at samsung)  
