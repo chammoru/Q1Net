@@ -5,6 +5,17 @@ https://www.bmvc2021-virtualconference.com/conference/papers/paper_0813.html
 Kyuwon Kim (chammoru at gmail, q1.kim at samsung)  
 Chulju Yang (ijn9429 at gmail, chulju at samsung)
 
+## Citation
+```
+@InProceedings{kim2021q1net,
+  title={Quality Level Prediction of Image Compression using Block-wise Confidence-aware CNN.},
+  author={Kim, Kyuwon and Yang, Chulju},
+  booktitle={Proceedings of the British Machine Vision Conference},
+  month={Nov.},
+  year={2021}
+}
+```
+
 ## Requirement
 - TensorFlow >= 2.4
 
