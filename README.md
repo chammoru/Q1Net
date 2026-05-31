@@ -19,6 +19,42 @@ factor) directly from the image, using a block-wise, confidence-aware CNN.
   fuses only the reliable patches instead of processing the whole image.
 - **Deployable:** exports to TensorFlow Lite for on-device inference.
 
+## How it works
+Instead of looking at the whole image, Q1Net samples small patches around coding
+blocks, runs a lightweight CNN on each patch to predict a quality value together
+with a confidence, keeps only the high-confidence patches, and fuses them:
+
+```mermaid
+flowchart LR
+    A[Input image] --> B[Sample small patches<br/>around coding blocks]
+    B --> C[CNN backbone]
+    C --> D[Per-patch:<br/>confidence + quality]
+    D --> E{confidence above<br/>threshold?}
+    E -- yes --> F[Keep patch]
+    E -- no --> G[Discard patch]
+    F --> H[Fuse by median<br/>= predicted quality]
+```
+
+The per-patch backbone is a compact residual CNN operating on 16x16x3 patches:
+
+```mermaid
+flowchart LR
+    I[16x16x3 patch] --> S["CBR + Bottleneck stages<br/>channels 8 - 16 - 32 - 64 - 32 - 16"]
+    S --> CV[Conv 3x3, ReLU]
+    CV --> P[Global average pooling]
+    P --> O["Dense 2, sigmoid x100<br/>= confidence, quality"]
+```
+
+CBR is Conv to BatchNorm to ReLU; the bottleneck is a 1x1 to 3x3 to 1x1 residual
+block. The confidence-aware loss down-weights unreliable patches during training.
+
+## Results
+Predicted vs. true JPEG quality on a sample image (compressed at quality levels
+5-100). The prediction tracks the ideal line closely and saturates slightly at
+very high quality, where compression artifacts are hard to detect:
+
+![Predicted vs. true JPEG quality](docs/quality_prediction.png)
+
 ## Authors
 - Kyuwon Kim (chammoru at gmail, q1.kim at samsung)
 - Chulju Yang (ijn9429 at gmail, chulju at samsung)
