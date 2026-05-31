@@ -130,6 +130,14 @@ Q1Net can benefit a wide range of applications, including:
 - Instant messaging apps
 - And many more
 
+For example, knowing the compression quality of a photo (such as the ID photo in a
+mobile driver's-license app below) lets an app decide whether to enhance it before
+display:
+
+![Mobile ID-photo quality use case](docs/pass_app.png)
+
+> Image source: Yonhap News (watermarked); used here for illustration only.
+
 ## License
 This code is released for **non-commercial research and evaluation purposes only**.
 The methods implemented here are covered by U.S. Patent No. 12,462,356 B2, owned by
