@@ -34,7 +34,12 @@ is used.
 This project uses the [DIV2K dataset](https://data.vision.ee.ethz.ch/cvl/DIV2K/).
 
 ## Clone and setup
+The pretrained model weights are tracked with [Git LFS](https://git-lfs.com/),
+so install it **before** cloning:
 ```bash
+# install Git LFS once per machine, then enable it for your user
+git lfs install
+
 git clone https://github.com/chammoru/Q1Net.git
 cd Q1Net
 
@@ -50,6 +55,18 @@ pip install -r requirements.txt
 cd classifier
 . ./env.sh
 ```
+
+If you already cloned the repository without Git LFS, fetch the weights with:
+```bash
+git lfs pull
+```
+
+### Pretrained weights without Git LFS
+If you cannot use Git LFS, download `q1net-weights.zip` from the
+[Releases page](https://github.com/chammoru/Q1Net/releases) and extract it at the
+repository root so that `classifier/save/<comp_type>/best/` contains the checkpoint
+files (`.index` and `.data-*`). The commands that load the model print a clear error
+if the weights are missing or are still unresolved Git LFS pointers.
 
 The supported compression types (`--comp_type`) are `jpeg_paper` and `jpeg_paper_k12`.
 
