@@ -1,0 +1,71 @@
+Q1Net Non-Commercial Research License
+
+Copyright (c) 2021 Samsung Electronics Co., Ltd. All rights reserved.
+
+Software: the "Q1Net" source code and accompanying materials in this
+repository (the "Software"), as described in:
+  Kyuwon Kim and Chulju Yang, "Quality Level Prediction of Image Compression
+  using Block-wise Confidence-aware CNN", British Machine Vision Conference
+  (BMVC), 2021.
+
+1. DEFINITIONS
+   "Licensor" means the owner of the rights in the Software, Samsung
+   Electronics Co., Ltd.
+   "Non-Commercial Research Purpose" means use solely for academic research,
+   teaching, personal study, or non-commercial evaluation, and NOT for, or
+   in connection with, any product, service, or activity that is intended
+   for or directed toward commercial advantage or monetary compensation.
+
+2. GRANT OF COPYRIGHT LICENSE
+   Subject to the terms below, Licensor grants you a limited, worldwide,
+   royalty-free, non-exclusive, non-transferable, non-sublicensable license
+   to use, reproduce, and modify the Software, and to redistribute the
+   Software and your modifications, solely for a Non-Commercial Research
+   Purpose.
+
+3. NO PATENT LICENSE — PATENT RIGHTS RESERVED
+   The Software embodies one or more inventions that are protected by
+   patent(s) owned by Licensor. NO license, express or implied, to any
+   patent is granted under this license. Practicing the methods embodied in
+   the Software may infringe Licensor's patent(s). All patent rights are
+   expressly reserved by Licensor. Any commercial use, deployment, or
+   practice of the patented invention(s) requires a SEPARATE written patent
+   license from Licensor. The Software relates to U.S. Patent No. 12,462,356 B2
+   ("Apparatus and method for predicting compression quality of image in
+   electronic device", issued Nov. 4, 2025; published as US 2023/0102895 A1),
+   assigned to Samsung Electronics Co., Ltd., and any related or
+   corresponding patents and applications.
+
+4. NO COMMERCIAL USE
+   Any use of the Software that is not a Non-Commercial Research Purpose,
+   including without limitation incorporation into a product or service,
+   internal business use, or use for commercial advantage, is NOT permitted
+   under this license and requires a separate commercial license from
+   Licensor.
+
+5. REDISTRIBUTION CONDITIONS
+   Redistributions of the Software or derivative works, in source or binary
+   form, must (a) be solely for a Non-Commercial Research Purpose, (b) retain
+   this license in full, including the copyright notice and Sections 3 and 4,
+   and (c) clearly mark any modifications.
+
+6. NO TRADEMARK LICENSE
+   This license does not grant any rights to use the names, logos, or
+   trademarks of Licensor or the authors.
+
+7. DISCLAIMER OF WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+8. LIMITATION OF LIABILITY
+   IN NO EVENT SHALL THE AUTHORS OR LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES,
+   OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE,
+   ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+   OTHER DEALINGS IN THE SOFTWARE.
+
+9. TERMINATION
+   Any breach of this license automatically terminates your rights under it.
+
+For commercial licensing or patent licensing inquiries, contact the authors
+(chammoru at gmail) / Licensor.

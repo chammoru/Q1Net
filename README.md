@@ -62,6 +62,12 @@ In the `train.py`, `gen_data.py` creates a hdf5 file for training data:
 python3 ./to_tflite.py --comp_type jpeg_paper
 ```
 
+## License
+This code is released for **non-commercial research and evaluation purposes only**.
+The methods implemented here are covered by U.S. Patent No. 12,462,356 B2, owned by
+Samsung Electronics Co., Ltd.; **no patent license is granted**, and commercial use
+requires a separate license. See [LICENSE](LICENSE) for the full terms.
+
 ## Which apps can get benefits from Q1Net?
 - Image/Photo Editor
 - (Streaming) Video Player and Photo Viewer
