@@ -1,7 +1,7 @@
 # Q1Net: Quality Level Prediction of Image Compression using Block-wise Confidence-aware CNN
 
 Official implementation of the BMVC 2021 paper.
-Paper: https://bmvc2021-virtualconference.com/conference/papers/paper_0813.html
+Paper: https://bmva-archive.org.uk/bmvc/2021/conference/papers/paper_0813.html
 
 Q1Net predicts the quality level of a compressed image (e.g. the JPEG quality
 factor) directly from the image, using a block-wise, confidence-aware CNN.
