@@ -1,4 +1,5 @@
 import math
+import os
 import random
 
 import h5py
@@ -145,3 +146,22 @@ def get_classifier_config(comp_type) -> ClassifierConfig:
     if not config:
         raise NotImplementedError("{} is not in {}".format(comp_type, COMP_CLASSIFIER_CONFIGS.keys()))
     return config
+
+
+_GIT_LFS_POINTER_PREFIX = b"version https://git-lfs.github.com/spec/v1"
+_WEIGHTS_HELP = ("The pretrained weights are tracked with Git LFS. Install Git LFS "
+                 "and run 'git lfs install && git lfs pull', or download the weights "
+                 "from the repository's GitHub Releases page. See the README for details.")
+
+
+def ensure_weights_available(best_model_path):
+    """Fail early with a helpful message if the checkpoint is missing or is an
+    unresolved Git LFS pointer (e.g. the repo was cloned without Git LFS)."""
+    index_path = best_model_path + ".index"
+    if not os.path.exists(index_path):
+        raise FileNotFoundError("Model weights not found at '{}'. {}".format(index_path, _WEIGHTS_HELP))
+    with open(index_path, "rb") as f:
+        head = f.read(len(_GIT_LFS_POINTER_PREFIX))
+    if head == _GIT_LFS_POINTER_PREFIX:
+        raise RuntimeError("Model weights at '{}' are an unresolved Git LFS pointer. {}"
+                           .format(index_path, _WEIGHTS_HELP))

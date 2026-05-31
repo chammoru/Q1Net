@@ -144,6 +144,7 @@ def main():
     config = class_core.get_classifier_config(args.comp_type)
     comp_qualities = config.get_comp_qualities()
     best_model_path = config.get_best_model_path()
+    class_core.ensure_weights_available(best_model_path)
     cls_model = class_core.build_model(config, trainable=False)
     cls_model.load_weights(best_model_path).expect_partial()
 
