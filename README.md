@@ -22,8 +22,13 @@ factor) directly from the image, using a block-wise, confidence-aware CNN.
 ```
 
 ## Requirements
-- Python 3
-- TensorFlow >= 2.4
+- Python 3 (tested on 3.12)
+- The pinned packages in [`requirements.txt`](requirements.txt) (TensorFlow 2.16,
+  installed in the setup step below)
+
+TensorFlow 2.16 defaults to Keras 3, but this project uses the Keras 2 API.
+`env.sh` exports `TF_USE_LEGACY_KERAS=1` so the `tf-keras` (Keras 2) implementation
+is used.
 
 ## Dataset
 This project uses the [DIV2K dataset](https://data.vision.ee.ethz.ch/cvl/DIV2K/).
@@ -31,11 +36,18 @@ This project uses the [DIV2K dataset](https://data.vision.ee.ethz.ch/cvl/DIV2K/)
 ## Clone and setup
 ```bash
 git clone https://github.com/chammoru/Q1Net.git
+cd Q1Net
 
-# Go to the source directory
-cd Q1Net/classifier
+# (recommended) create and activate a virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
 
-# Set up the environment (adds the repo root to PYTHONPATH)
+# install the pinned dependencies
+pip install -r requirements.txt
+
+# go to the source directory and set up the environment
+# (adds the repo root to PYTHONPATH and exports TF_USE_LEGACY_KERAS=1)
+cd classifier
 . ./env.sh
 ```
 
