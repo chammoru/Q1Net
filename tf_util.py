@@ -1,7 +1,7 @@
 import tensorflow as tf
-from tensorflow.python.keras.layers import ReLU, Conv2D, BatchNormalization, Dense, GlobalAveragePooling2D, \
+from tensorflow.keras.layers import ReLU, Conv2D, BatchNormalization, Dense, GlobalAveragePooling2D, \
     GlobalMaxPooling2D, Reshape, multiply, Concatenate, Add, Activation, Lambda
-from tensorflow.python.keras import backend as K
+from tensorflow.keras import backend as K
 
 
 def bottleneck(x, planes):
@@ -60,9 +60,8 @@ def CBR(x, planes, kernel_size):
 def allow_gpu_growth():
     # Prevent the "CUDNN_STATUS_ALLOC_FAILED" error
     tf.keras.backend.clear_session()
-    config = tf.compat.v1.ConfigProto()
-    config.gpu_options.allow_growth = True
-    tf.compat.v1.InteractiveSession(config=config)
+    for gpu in tf.config.list_physical_devices('GPU'):
+        tf.config.experimental.set_memory_growth(gpu, True)
 
 
 def to_tflite(model, tflite_model_path):
