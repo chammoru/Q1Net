@@ -90,7 +90,9 @@ if __name__ == '__main__':
     else:
         print("Start training from scratch")
     cls_model.summary()
-    cls_model.compile(optimizer='adam', loss=config.get_loss())
+    # Use the legacy Adam optimizer so the optimizer slots saved in the
+    # pretrained checkpoint (TF < 2.11) restore into a compatible optimizer.
+    cls_model.compile(optimizer=tf.keras.optimizers.legacy.Adam(), loss=config.get_loss())
 
     # Prepare training dataset
     training_sequence = config.get_sequence(cls_model, args.hdf5_train_path, args.batch_size, True)

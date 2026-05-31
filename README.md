@@ -75,8 +75,15 @@ Predict the quality level of a single image:
 ```bash
 python3 ./predict_cls.py --in_path ../sample_image/monarch_jpeg_q20.png --comp_type jpeg_paper
 ```
+The sample image is JPEG quality 20, so the output is close to 20:
+```
+predicted quality 20.01, estimated in 0.135 seconds
+```
 
 ## Evaluation
+Evaluate over a directory of images. Each image is compressed at every quality
+level, predicted, and compared against the ground truth; the mean absolute error
+is reported and a confusion matrix is saved to `--out_path` (default `out/`).
 ```bash
 # Download the validation set
 wget https://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_valid_HR.zip
