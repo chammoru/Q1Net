@@ -1,0 +1,19 @@
+# Pinned dependencies for Q1Net.
+# Verified with Python 3.12 (macOS x86_64); a JPEG-quality prediction on the
+# bundled sample image reproduces the expected result.
+#
+# TensorFlow 2.16 ships Keras 3 by default, but this project targets the
+# Keras 2 API. tf-keras provides the Keras 2 implementation, and
+# `TF_USE_LEGACY_KERAS=1` selects it (exported by classifier/env.sh).
+tensorflow==2.16.2
+tf-keras==2.16.0
+numpy==1.26.4
+opencv-python==4.11.0.86
+h5py==3.16.0
+scikit-learn==1.8.0
+scikit-image==0.26.0
+matplotlib==3.10.9
+
+# Optional — only needed for tool/dng_to_png.py (DNG -> PNG conversion):
+# imageio==2.37.3
+# rawpy

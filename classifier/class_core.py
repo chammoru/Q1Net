@@ -7,8 +7,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import Input
 from tensorflow.keras.models import Model
 from tensorflow.keras.utils import Sequence
-from tensorflow.python.keras.losses import Loss
-from tensorflow.python.ops import math_ops
+from tensorflow.keras.losses import Loss
 
 from classifier_config import jpeg_paper, jpeg_paper_k12
 from comp_classifier import ClassifierConfig
@@ -34,8 +33,8 @@ class ConfidenceAwareMSE(Loss):
         confidence_pred = y_pred[:, 0]
         quality_true = y_true[:, 1]
         quality_pred = y_pred[:, 1]
-        return math_ops.reduce_mean(math_ops.abs(confidence_true - confidence_pred) * 0.5
-                                    + math_ops.abs(quality_true - quality_pred), axis=-1)
+        return tf.math.reduce_mean(tf.math.abs(confidence_true - confidence_pred) * 0.5
+                                   + tf.math.abs(quality_true - quality_pred), axis=-1)
 
 
 class DefaultClsSequence(Sequence):
