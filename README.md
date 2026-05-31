@@ -49,11 +49,13 @@ CBR is Conv to BatchNorm to ReLU; the bottleneck is a 1x1 to 3x3 to 1x1 residual
 block. The confidence-aware loss down-weights unreliable patches during training.
 
 ## Results
-Predicted vs. true JPEG quality on a sample image (compressed at quality levels
-5-100). The prediction tracks the ideal line closely and saturates slightly at
-very high quality, where compression artifacts are hard to detect:
+Confusion matrices over 10,000 compressed images spanning all 100 quality levels
+(Figure 4 from the [paper](https://bmva-archive.org.uk/bmvc/2021/conference/papers/paper_0813.html)).
+A sharper diagonal means more accurate quality prediction: Q1Net (c) produces a
+markedly tighter diagonal than MobileNetV2 (a) and JQE (b), staying accurate
+across the full quality range.
 
-![Predicted vs. true JPEG quality](docs/quality_prediction.png)
+![Confusion matrices comparing MobileNetV2, JQE, and Q1Net](docs/confusion_matrices.png)
 
 ## Authors
 - Kyuwon Kim (chammoru at gmail, q1.kim at samsung)
