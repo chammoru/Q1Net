@@ -1,12 +1,23 @@
 # Q1Net: Quality Level Prediction of Image Compression using Block-wise Confidence-aware CNN
 
 [![CI](https://github.com/chammoru/Q1Net/actions/workflows/ci.yml/badge.svg)](https://github.com/chammoru/Q1Net/actions/workflows/ci.yml)
+[![Paper](https://img.shields.io/badge/Paper-BMVC%202021-blue)](https://bmva-archive.org.uk/bmvc/2021/conference/papers/paper_0813.html)
+[![License](https://img.shields.io/badge/License-Non--Commercial%20Research-green)](LICENSE)
 
 Official implementation of the BMVC 2021 paper.
 Paper: https://bmva-archive.org.uk/bmvc/2021/conference/papers/paper_0813.html
 
 Q1Net predicts the quality level of a compressed image (e.g. the JPEG quality
 factor) directly from the image, using a block-wise, confidence-aware CNN.
+
+## Highlights
+- **Real-time:** predicts the compression quality level in milliseconds, fast
+  enough to run on mobile devices.
+- **Accurate:** over 99% accuracy in the paper's experiments.
+- **Block-wise & confidence-aware:** exploits the characteristic deformations
+  transform coding leaves on small blocks, estimates a per-patch confidence, and
+  fuses only the reliable patches instead of processing the whole image.
+- **Deployable:** exports to TensorFlow Lite for on-device inference.
 
 ## Authors
 - Kyuwon Kim (chammoru at gmail, q1.kim at samsung)
