@@ -1,5 +1,7 @@
 # Q1Net: Quality Level Prediction of Image Compression using Block-wise Confidence-aware CNN
 
+[![CI](https://github.com/chammoru/Q1Net/actions/workflows/ci.yml/badge.svg)](https://github.com/chammoru/Q1Net/actions/workflows/ci.yml)
+
 Official implementation of the BMVC 2021 paper.
 Paper: https://bmva-archive.org.uk/bmvc/2021/conference/papers/paper_0813.html
 
