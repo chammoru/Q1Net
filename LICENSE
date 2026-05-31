@@ -1,14 +1,6 @@
-Q1Net Non-Commercial Research License (DRAFT)
+Q1Net Non-Commercial Research License
 
->>> DRAFT — PENDING SAMSUNG LEGAL / IP REVIEW <<<
-This text is a working draft prepared for the authors. It has NOT been
-reviewed or approved by Samsung's legal/IP department. Do not treat it as a
-final, binding license. The exact copyright owner entity, the list of
-patents, and all terms below must be confirmed by the rights holder before
-this software is published under this license.
-
-Copyright (c) 2021 Samsung Electronics Co., Ltd. (to be confirmed).
-All rights reserved.
+Copyright (c) 2021 Samsung Electronics Co., Ltd. All rights reserved.
 
 Software: the "Q1Net" source code and accompanying materials in this
 repository (the "Software"), as described in:
@@ -17,8 +9,8 @@ repository (the "Software"), as described in:
   (BMVC), 2021.
 
 1. DEFINITIONS
-   "Licensor" means the owner of the rights in the Software (Samsung
-   Electronics Co., Ltd., to be confirmed).
+   "Licensor" means the owner of the rights in the Software, Samsung
+   Electronics Co., Ltd.
    "Non-Commercial Research Purpose" means use solely for academic research,
    teaching, personal study, or non-commercial evaluation, and NOT for, or
    in connection with, any product, service, or activity that is intended
@@ -38,7 +30,11 @@ repository (the "Software"), as described in:
    the Software may infringe Licensor's patent(s). All patent rights are
    expressly reserved by Licensor. Any commercial use, deployment, or
    practice of the patented invention(s) requires a SEPARATE written patent
-   license from Licensor. [Patent identifiers to be inserted by Licensor.]
+   license from Licensor. The Software relates to U.S. Patent No. 12,462,356 B2
+   ("Apparatus and method for predicting compression quality of image in
+   electronic device", issued Nov. 4, 2025; published as US 2023/0102895 A1),
+   assigned to Samsung Electronics Co., Ltd., and any related or
+   corresponding patents and applications.
 
 4. NO COMMERCIAL USE
    Any use of the Software that is not a Non-Commercial Research Purpose,
