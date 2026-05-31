@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  smoke:
+    name: Prediction smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository (with Git LFS weights)
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Predict on the bundled sample image
+        working-directory: classifier
+        run: |
+          # env.sh adds the repo root to PYTHONPATH and exports TF_USE_LEGACY_KERAS=1
+          . ./env.sh
+          export TF_CPP_MIN_LOG_LEVEL=3
+
+          out=$(python predict_cls.py --in_path ../sample_image/monarch_jpeg_q20.png --comp_type jpeg_paper)
+          echo "$out"
+
+          # The sample is JPEG quality 20, so the prediction must be close to 20.
+          echo "$out" | grep -q "predicted quality" || { echo "::error::no prediction output"; exit 1; }
+          q=$(echo "$out" | sed -n 's/.*predicted quality \([0-9.]*\).*/\1/p' | tail -1)
+          python -c "import sys; q=float('$q'); print('parsed quality:', q); sys.exit(0 if 18.0 <= q <= 22.0 else 1)" \
+            || { echo "::error::predicted quality '$q' outside expected range [18, 22]"; exit 1; }
