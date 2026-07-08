@@ -38,11 +38,36 @@ class ConfidenceAwareMSE(Loss):
                                    + tf.math.abs(quality_true - quality_pred), axis=-1)
 
 
+def crop_with_drift(patch, in_dim, sample_index, random_drift):
+    """Crop an (in_dim x in_dim) window out of a stored patch.
+
+    Stored patches are one block larger than the network input and their
+    top-left corner is aligned to the codec's block grid (see gen_data.py),
+    so a sub-block crop offset controls the drift between the input window
+    and the compression grid. Training uses a random offset each epoch so the
+    model becomes robust to images cropped off the 8x8 grid; validation uses
+    a deterministic per-sample offset so val_loss is comparable across epochs
+    while still covering every drift phase. Legacy datasets that store
+    patches at the input size pass through unchanged.
+    """
+    margin = patch.shape[0] - in_dim
+    if margin <= 0:
+        return patch
+    if random_drift:
+        off_h = random.randrange(margin)
+        off_w = random.randrange(margin)
+    else:
+        off_h = sample_index % margin
+        off_w = (sample_index // margin) % margin
+    return patch[off_h:off_h + in_dim, off_w:off_w + in_dim]
+
+
 class DefaultClsSequence(Sequence):
-    def __init__(self, data_path, batch_size, shuffle=False):
+    def __init__(self, config: ClassifierConfig, data_path, batch_size, shuffle=False):
         hdf5 = h5py.File(data_path, 'r')
         self.X = hdf5[HDF5_NAME_X]
         self.Q = hdf5[HDF5_NAME_Q]
+        self.in_dim = config.get_input_dimension()
         self.batch_size = batch_size
         self.num_samples = len(self.X)
         self.shuffled_index_pool = list(range(self.num_samples))
@@ -65,7 +90,8 @@ class DefaultClsSequence(Sequence):
         end = min(start + self.batch_size, self.num_samples)
         idx_range = self.shuffled_index_pool[start:end]
         for i in idx_range:
-            batch_x.append(self.X[i].astype('float32'))
+            patch = crop_with_drift(self.X[i], self.in_dim, i, self.shuffle)
+            batch_x.append(patch.astype('float32'))
             batch_y.append(self.Q[i].astype('uint8'))
 
         return np.array(batch_x), np.array(batch_y)
@@ -84,6 +110,7 @@ class ConfClsSequence(Sequence):
         self.model = model
         self.X = hdf5[HDF5_NAME_X]
         self.Q = hdf5[HDF5_NAME_Q]
+        self.in_dim = config.get_input_dimension()
         self.batch_size = batch_size
         self.num_samples = len(self.X)
         self.shuffled_index_pool = list(range(self.num_samples))
@@ -99,25 +126,23 @@ class ConfClsSequence(Sequence):
 
     # Gets batch at position `idx`.
     def __getitem__(self, idx):
-        batch_x = []
         batch_y = []
 
         start = self.batch_size * idx
         end = min(start + self.batch_size, self.num_samples)
         index_pool_subset = self.shuffled_index_pool[start:end]
 
-        rand_batch_input = [self.X[rand_index].astype('float32') for rand_index in index_pool_subset]
-        rand_batch_pred = self.model.predict(np.array(rand_batch_input))
+        batch_x = np.array([crop_with_drift(self.X[rand_index], self.in_dim, rand_index, self.shuffle)
+                            .astype('float32') for rand_index in index_pool_subset])
+        rand_batch_pred = self.model.predict(batch_x, verbose=0)
 
         for sequential_idx, rand_index in enumerate(index_pool_subset):
-            batch_x.append(self.X[rand_index].astype('float32'))
-
             quality_true = self.Q[rand_index].astype('float32')
             quality_pred = rand_batch_pred[sequential_idx][1]
             confidence_true = self.biggest_index - np.abs(quality_true - quality_pred)
             batch_y.append(np.array([confidence_true, quality_true]))  # change to 2nd dimension
 
-        return np.array(batch_x), np.array(batch_y)
+        return batch_x, np.array(batch_y)
 
     # A callback called at the end of every epoch. However, TF2.1 doesn't call this due to a bug. TF2.2 is okay
     def on_epoch_end(self):

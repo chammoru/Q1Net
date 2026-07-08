@@ -57,6 +57,24 @@ across the full quality range.
 
 ![Confusion matrices comparing MobileNetV2, JQE, and Q1Net](docs/confusion_matrices.png)
 
+### Robustness to off-grid crops (2026 update)
+JPEG block boundaries sit on an 8x8 grid only as long as the image has not been
+cropped; a crop at an arbitrary offset shifts the grid phase. The training
+pipeline now stores patches one block larger (24x24) with the top-left corner
+aligned to the compression grid, and crops the 16x16 network input at a random
+sub-block offset every epoch, so the model stays accurate on images whose pixel
+alignment is no longer a multiple of 8.
+
+The bundled `jpeg_paper` weights were fine-tuned this way for 45 epochs on DIV2K
+(see [`notebooks/kaggle_train.ipynb`](notebooks/kaggle_train.ipynb) for the
+reproducible Kaggle run). Image-level MAE over 15 DIV2K-valid images at 10
+quality levels, against the previous checkpoint:
+
+| | aligned | cropped off-grid (3,5) |
+|---|---|---|
+| previous weights | 0.36 | 0.44 |
+| drift-trained weights | **0.31** | **0.37** |
+
 ## Authors
 - Kyuwon Kim (chammoru at gmail, q1.kim at samsung)
 - Chulju Yang (ijn9429 at gmail, chulju at samsung)
@@ -152,7 +170,15 @@ unzip DIV2K_train_HR.zip
 sh batch_train_jpeg_paper.sh
 ```
 During training, `gen_data.py` generates an HDF5 file of training data that
-`train.py` then consumes.
+`train.py` then consumes. `gen_data.py` stores 24x24 grid-aligned patches and
+the training sequence applies random sub-block drift crops (see the Results
+update above); `train.py` accepts `--lr` for fine-tuning and `--verbose 2` for
+non-interactive runners.
+
+To train on a free Kaggle GPU instead, push
+[`notebooks/kaggle_train.ipynb`](notebooks/kaggle_train.ipynb) with the Kaggle
+CLI (`kaggle kernels push -p notebooks`); it downloads DIV2K, generates the
+datasets, fine-tunes for 45 epochs, and compares against the committed weights.
 
 ## Convert the model to TFLite
 ```bash

@@ -26,8 +26,6 @@ parser.add_argument('--comp_type', required=True, type=str,
                     help='compression type such as jpeg or hevc')
 parser.add_argument('--save_image', default=False, action='store_true',
                     help='save png images for debugging')
-parser.add_argument('--perturb', default=None, type=int,
-                    help='int value that specifies how much perturbation should be applied when generating datasets')
 args = parser.parse_args()
 
 out_path = Path(args.out_path)
@@ -45,22 +43,22 @@ if num_images <= 0:
 
 config = class_core.get_classifier_config(args.comp_type)
 comp_qualities = config.get_comp_qualities()
-if args.perturb is None:
-    perturb = config.get_perturb_size()
-else:
-    perturb = args.perturb
 in_dim = config.get_input_dimension()
 block = config.get_block_size()
 
 print("Compression Qualities: {}".format(comp_qualities))
 
-in_side = (in_dim - block) // 2
-in_stride = max(((in_dim + block - 1) // block) * block, block * 3)
-in_pad = (in_stride - in_dim) // 2
+# Store patches one block larger than the network input, with the top-left
+# corner aligned to the compression grid. The training sequence crops an
+# (in_dim x in_dim) window at a random sub-block offset, so the model sees
+# every possible drift between the patch and the codec's block grid. This
+# replaces the old scheme that enumerated all block x block perturbations
+# into the HDF5 file (a block^2 blow-up of near-duplicate samples).
+store_dim = in_dim + block
 
 num_patches = (args.num_samples + num_images - 1) // num_images
 num_qualities = len(comp_qualities)
-num_samples = num_images * num_patches * num_qualities * perturb * perturb
+num_samples = num_images * num_patches * num_qualities
 
 print("For each {} images, generate {} samples for each of {} qualities, yielding {} samples".
       format(num_images, num_patches, num_qualities, num_samples))
@@ -68,16 +66,12 @@ print("For each {} images, generate {} samples for each of {} qualities, yieldin
 hdf5 = h5py.File(str(out_path / args.hdf5_name), 'w')
 key_x = class_core.HDF5_NAME_X
 key_q = class_core.HDF5_NAME_Q
-hdf5.create_dataset(key_x, (num_samples, in_dim, in_dim, class_core.COLOR), dtype='uint8')
+hdf5.create_dataset(key_x, (num_samples, store_dim, store_dim, class_core.COLOR), dtype='uint8')
 hdf5.create_dataset(key_q, (num_samples,), dtype='uint8')
 X = hdf5[key_x]
 Q = hdf5[key_q]
 
 image_cache_dir = util.get_image_cache_dir(args.in_path, args.comp_type)
-perturb_list = []
-for h_perturb in range(-(perturb // 2), math.ceil(perturb / 2)):
-    for w_perturb in range(-(perturb // 2), math.ceil(perturb / 2)):
-        perturb_list.append((h_perturb, w_perturb))
 
 for image_file in image_files:
     # Compressed image path
@@ -89,16 +83,16 @@ for image_file in image_files:
     comp_images = [util.get_cached_comp(config.gen_comp, filename, image_file, image_cache_dir, comp_quality)
                    for comp_quality in comp_qualities]
 
-    # Create random image patches (24x24) from compressed image, and matching 12x12 center from uncompressed one
+    # Create random grid-aligned patches (store_dim x store_dim) from each compressed image
     for i in range(num_patches):
         loop_limit = 3
         # Through the next loop, try to reduce the number of solid patch inputs
         while True:
             loop_limit -= 1
-            h2 = block * random.randint(0, math.floor((h1 - in_stride) / block)) + in_pad
-            w2 = block * random.randint(0, math.floor((w1 - in_stride) / block)) + in_pad
+            h2 = block * random.randint(0, math.floor((h1 - store_dim) / block))
+            w2 = block * random.randint(0, math.floor((w1 - store_dim) / block))
 
-            orig_patch = orig_image[h2:h2 + in_dim, w2:w2 + in_dim].astype("uint8")
+            orig_patch = orig_image[h2:h2 + store_dim, w2:w2 + store_dim].astype("uint8")
             variance = util.cal_variance(orig_patch)
             if variance > 0 or loop_limit <= 0:
                 break
@@ -106,19 +100,15 @@ for image_file in image_files:
         if args.save_image:
             cv2.imwrite("{}_patch{:03d}_orig.png".format(filename, i), orig_patch)
 
-        for (h_perturb, w_perturb) in perturb_list:
-            h3 = h2 + h_perturb
-            w3 = w2 + w_perturb
+        for quality_idx, comp_quality in enumerate(comp_qualities):  # Get compressed image with desired quality
+            comp_image = comp_images[quality_idx]
+            X[count_sample] = comp_image[h2:h2 + store_dim, w2:w2 + store_dim].astype("uint8")
+            Q[count_sample] = comp_quality
 
-            for quality_idx, comp_quality in enumerate(comp_qualities):  # Get compressed image with desired quality
-                comp_image = comp_images[quality_idx]
-                X[count_sample] = comp_image[h3:h3 + in_dim, w3:w3 + in_dim].astype("uint8")
-                Q[count_sample] = comp_quality
+            if args.save_image:
+                cv2.imwrite("{}_patch{:03d}_quality_{}.png".format(filename, i, comp_quality), X[count_sample])
 
-                if args.save_image:
-                    cv2.imwrite("{}_patch{:03d}_quality_{}.png".format(filename, i, comp_quality), X[count_sample])
-
-                count_sample += 1
+            count_sample += 1
 
     count_image += 1
     print("Processed {}/{} image".format(count_image, num_images), end='\r')

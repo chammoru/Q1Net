@@ -21,7 +21,7 @@ tf_util.allow_gpu_growth()
 class Callbacks(tf.keras.callbacks.Callback):
     def __init__(self, model_path):
         super().__init__()
-        self.best_val_loss = np.Inf
+        self.best_val_loss = np.inf
         self.model_path = model_path
 
         try:
@@ -66,6 +66,10 @@ if __name__ == '__main__':
                         help='the base weights from which the training starts')
     parser.add_argument('--epochs', type=int, default=50,
                         help='the number of epochs to run')
+    parser.add_argument('--lr', type=float, default=1e-3,
+                        help='learning rate (use a smaller value such as 3e-4 when fine-tuning)')
+    parser.add_argument('--verbose', type=int, default=1,
+                        help='keras fit verbosity; use 2 (one line per epoch) on non-tty runners')
     parser.add_argument('--hdf5_val_path', required=True, type=str,
                         help='name of a hdf5 file for validation')
     parser.add_argument('--steps_per_epoch', type=int,
@@ -92,7 +96,7 @@ if __name__ == '__main__':
     cls_model.summary()
     # Use the legacy Adam optimizer so the optimizer slots saved in the
     # pretrained checkpoint (TF < 2.11) restore into a compatible optimizer.
-    cls_model.compile(optimizer=tf.keras.optimizers.legacy.Adam(), loss=config.get_loss())
+    cls_model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=args.lr), loss=config.get_loss())
 
     # Prepare training dataset
     training_sequence = config.get_sequence(cls_model, args.hdf5_train_path, args.batch_size, True)
@@ -112,6 +116,7 @@ if __name__ == '__main__':
                                 steps_per_epoch=steps_per_epoch,
                                 validation_data=validation_sequence,
                                 epochs=args.epochs,
+                                verbose=args.verbose,
                                 callbacks=[Callbacks(best_model_path)])
     except KeyboardInterrupt:
         print("\n Stop training due to KeyboardInterrupt")
